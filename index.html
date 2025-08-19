@@ -36,16 +36,57 @@
     h2{font-size:22px;margin-bottom:8px}
     .muted{color:var(--muted)}
 
+    /* Global highlight style */
+    .highlight {
+      color: var(--acc);
+      font-weight: bold;
+      padding: 0 0.25em;
+      border-radius: 0.25em;
+    }
+
     /* Hero */
-    .hero{padding:72px 0;text-align:center;animation:fadeIn 1s ease both}
+    .hero{
+      padding:12px 0 32px;                 /* was 72px 0 — shrink the gap */
+      text-align:center;
+      animation:fadeIn 1s ease both;
+      position: relative;              /* keep for absolute child */
+      overflow: hidden;}
     .hero h1{font-size:clamp(28px,5vw,44px);line-height:1.2}
     .hero h1 .highlight{color:var(--acc);font-weight:700}
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .hero .container{
+      position: relative;
+      z-index: 1;
+      padding-top: clamp(110px, 22vw, 200px); /* <-- move text down */ }
+    .hero-lottie{
+      position: absolute;                      /* take it out of flow */
+      top: clamp(-40px, -4vh, 8px);                               /* sits near the top of hero */
+      left: 50%;
+      transform: translateX(-50%)scale(2);
+      width: min(620px, 38vw, 45vh, calc(100% - 48px));
+      aspect-ratio: 1 / 1;
+      height: auto;
+      pointer-events: none;
+      opacity: .95;}
+      /* Add spacing between the lines in the hero only */
+      .hero h1{ font-size:clamp(28px,5vw,44px); line-height:1.2; margin-bottom: 10px; }
+      .hero h2{ margin-top: 14px; }  /* prevents the animation tail touching this line */
+      @media (max-width: 420px){
+        .hero-lottie{
+          top: -8px;
+          width: min(360px, 70vw, 40vh, calc(100% - 24px));}
+  .hero .container{
+    padding-top: clamp(100px, 40vw, 180px);}
+  .hero h2{ margin-top: 12px; }
+}
+    @media (prefers-reduced-motion: reduce){
+      .hero-lottie{ display: none; }    /* accessibility */}
+
 
     /* About */
-    .about{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:start}
+    .about{display:grid;grid-template-columns:1.1fr .9fr;gap:100px;align-items:start}
     @media (max-width: 900px){ .about{grid-template-columns:1fr} }
-    .photo{width:240px;aspect-ratio:1/1;border-radius:18px;background:radial-gradient(70% 70% at 60% 40%,#203066,#0b1020);border:1px solid var(--acc);box-shadow:var(--shadow);overflow:hidden}
+    .photo{width:240px;aspect-ratio:1/1;border-radius:18px;background:radial-gradient(70% 70% at 60% 40%,#203066,#0b1020);box-shadow:var(--shadow);overflow:hidden}
     .photo img{width:100%;height:100%;object-fit:cover}
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .chip{background:var(--chip);border:1px solid rgba(124,156,255,.3);padding:6px 10px;border-radius:999px;font-size:12px}
@@ -66,12 +107,43 @@
     @media (max-width: 620px){ .grid{grid-template-columns:1fr} }
     .card{background:var(--surface);border:1px solid rgba(124,156,255,.3);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
     .tile{display:flex;flex-direction:column;gap:10px}
-    .thumb{height:140px;border-radius:12px;border:1px solid rgba(124,156,255,.3);display:grid;place-items:center;font-size:44px;background:linear-gradient(180deg,#1a2452,#0f162f)}
+    .thumb {
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(124,156,255,.3);
+      background: linear-gradient(180deg,#1a2452,#0f162f);
+      overflow: hidden;
+      display: block;
+      transition: transform .15s ease; /* subtle hover */
+    }
+    .thumb:hover{transform:translateY(-2px)}
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .meta{color:var(--muted);font-size:14px}
+
+    /* Title + tech line for cards */
+    .card-title{font-size:18px;line-height:1.3;display:block;margin:8px 0 6px}
+    .techline{margin-top:6px;font-size:13px;opacity:.9}
+
+    /* Clamp long blurbs so cards align */
+    .tile .meta{
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
     .card .btn{border-color:var(--acc);color:var(--acc)}
 
     footer{padding:28px 0;color:var(--muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
   </style>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
   <header>
@@ -89,7 +161,7 @@
         <a class="iconbtn" href="mailto:r.delmo314@gmail.com" title="Email">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg>
         </a>
-        <a class="iconbtn" href="https://www.linkedin.com/in/USERNAME" target="_blank" rel="noreferrer" title="LinkedIn">
+        <a class="iconbtn" href="https://www.linkedin.com/in/rdelmo" target="_blank" rel="noopener noreferrer" title="LinkedIn">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-7.1c0-1.7-.03-3.9-2.38-3.9-2.38 0-2.74 1.86-2.74 3.78V23h-4V8z"/></svg>
         </a>
       </div>
@@ -100,9 +172,20 @@
     <!-- Hero -->
     <section id="home" class="hero">
       <div class="container">
-        <h1>Hi, I’m <span class="highlight">Rome</span> — I build practical ML/LLM projects with clean engineering.</h1>
-        <p class="muted">MSc Data Science & AI · Physics BSc · Focused on LLMs for mental health, MLOps, and end‑to‑end delivery.</p>
-        <a class="btn primary" href="mailto:r.delmo314@gmail.com">Say hi</a>
+        <lottie-player
+        class="hero-lottie"
+        src="assets/hero-lottie.json"
+        background="transparent"
+        speed="1"
+        loop
+        autoplay
+        aria-hidden="true">
+        </lottie-player>
+        
+        <h1>hey, <span class="highlight">Rome</span> here.</h1>
+        <h2 class="muted">(no, not the city!)</h2>
+        <p class="muted">I’m a Data Science & AI Master’s student with a background in physics. I love using data to learn, solve, and create.</p>
+        <a class="btn primary" href="mailto:r.delmo314@gmail.com">Say hi !</a>
       </div>
     </section>
 
@@ -111,13 +194,13 @@
       <div class="container about">
         <div>
           <h2>About me</h2>
-          <p class="muted"><strong>What I’m doing now:</strong> MSc Data Science & AI student; building a comparative LLM mental‑health assistant (<em>fine‑tuning vs RAG vs prompt‑only</em>) with lightweight MLOps.</p>
-          <p class="muted"><strong>Skills & technologies:</strong></p>
+          <p class="muted">I started as a <span class="highlight">Science Lab Technician</span>, supporting students with experiments and research projects. At the same time, I studied <span class="highlight">Physics</span> at The Open University where my final-year project focused on how quantum cryptography could protect against eavesdropping and hacking. Now, I’m doing a Master’s degree in <span class="highlight">Data Science and Artificial Intelligence</span> at Bournemouth University.</p>
+          <p class="muted">Some technologies I use right now:</p>
           <div class="chips">
-            <span class="chip">Python</span><span class="chip">PyTorch</span><span class="chip">scikit‑learn</span><span class="chip">FastAPI</span>
-            <span class="chip">Docker</span><span class="chip">MLflow</span><span class="chip">Llama 3</span><span class="chip">RAG</span><span class="chip">Git/GitHub</span>
+            <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">MongoDB</span><span class="chip">scikit-learn</span>
+            <span class="chip">Pandas</span><span class="chip">NumPy</span><span class="chip">PyTorch</span><span class="chip">NLP</span><span class="chip">LLM</span>
           </div>
-          <p class="muted" style="margin-top:10px"><strong>Outside of work:</strong> gym & calisthenics, urban exploring, photography, and making fun Lop character art.</p>
+          <p class="muted" style="margin-top:10px">Outside of work, I keep up with new science and tech. I like to play video games too, and also go out with friends and family to touch some grass.</p>
         </div>
         <div class="photo" aria-label="Portrait of Rome">
           <img src="assets/me.jpg" alt="Rome portrait" />
@@ -129,42 +212,45 @@
     <section id="experience">
       <div class="container">
         <h2>Experience</h2>
-        <p class="muted">Click a role to view a short description.</p>
         <div class="exp" id="expList">
           <article class="job">
             <header>
-              <h3>Research Assistant · LLMs for Mental Health (2024–2025)</h3>
+              <h3>Science Laboratory Technician @ <span class="highlight">Bournemouth & Poole College</span></h3>
               <button class="btn toggle" data-target="job1">Details</button>
             </header>
             <div class="content" id="job1">
+              <p class="muted">2021 –2022</p>
               <ul>
-                <li>Co‑authoring a critical review of LLMs in mental health; 2024–2025 focus.</li>
-                <li>Built a small evaluation harness; compared fine‑tuning, RAG, prompt baselines.</li>
-                <li>Drafted safety guardrails and simple error analysis workflows.</li>
+                <li>Supported experiments and student research projects in physics, microbiology, and forensic science.</li>
+                <li>Prepared, calibrated, and maintained lab equipment.</li>
+                <li>Guided students on research design and protocols.</li>
               </ul>
             </div>
           </article>
           <article class="job">
             <header>
-              <h3>Science Lab Assistant & Tutor</h3>
+              <h3>BSc Physics @ <span class="highlight">The Open University</span></h3>
               <button class="btn toggle" data-target="job2">Details</button>
             </header>
             <div class="content" id="job2">
+              <p class="muted">2021 –2024</p>
               <ul>
-                <li>Supported students (incl. SEN) and documented experiments clearly.</li>
-                <li>Helped students build revision plans, mind maps, and concise notes.</li>
+                <li>Graduated with First-Class Honours</li>
+                <li>Studied numerical methods, machine learning, and statistical modelling.</li>
+                <li>Final-year project: Can E91 Confront Eavesdropping and Quantum Attacks Better than BB84 in Noisy Quantum Channels?</li>
               </ul>
             </div>
           </article>
           <article class="job">
             <header>
-              <h3>Personal Projects · ML/LLM Engineering</h3>
+              <h3>MSc Data Science & AI @ <span class="highlight">Bournemouth University</span></h3>
               <button class="btn toggle" data-target="job3">Details</button>
             </header>
             <div class="content" id="job3">
+              <p class="muted">2025-2026</p>
               <ul>
-                <li>End‑to‑end ML pipeline with MLflow tracking, Dockerized FastAPI service.</li>
-                <li>Lightweight CI and reproducible experiments on a local M3 Mac.</li>
+                <li>Focus on machine learning, AI, computer vision, and data analytics.</li>
+                <li>Working on projects involving NLP, LLMs, and machine learning techniques to solve real-world problems</li>
               </ul>
             </div>
           </article>
@@ -176,7 +262,6 @@
     <section id="projects">
       <div class="container">
         <h2>Projects</h2>
-        <p class="muted">Short, impact‑first tiles. Each links to code.</p>
         <div class="grid" id="projectGrid"></div>
       </div>
     </section>
@@ -202,9 +287,20 @@
 
     // Projects data
     const PROJECTS = [
-      { title: 'LLM Mental‑Health Assistant', emoji: '🧠', blurb: 'Compare fine‑tuning, RAG, prompt‑only; eval + safety.', repo: 'https://github.com/USERNAME/mental-health-llm' },
-      { title: 'End‑to‑End ML Pipeline', emoji: '🛠️', blurb: 'ETL → training → tracking → batch inference.', repo: 'https://github.com/USERNAME/e2e-ml-pipeline' },
-      { title: 'NLP Classification (Reddit MH)', emoji: '🔎', blurb: 'Multi‑label classifier with error analysis.', repo: 'https://github.com/USERNAME/mh-nlp-classifier' }
+      { 
+        title: 'Identification of Fake Product Reviews',
+        image:'assets/fakeprod.png',
+        blurb: 'Used NLP techniques and traditional supervised ML; 82% accuracy with trained AdaBoost on a balanced dataset of 44,000 labelled reviews.',
+        tech: 'Python, NLTK, spaCy, scikit-learn, Pandas, Seaborn, Matplotlib',
+        repo: 'https://github.com/rdelmo/Identification-of-Fake-Product-Reviews'
+      },
+      { 
+        title: 'Automatic Number Plate Recognition under Foggy Conditions',
+        image:'assets/fog2.png',
+        blurb: 'Plate detection with Haar Cascade; transfer learning with ResNet50; freezing + hyperparameter tuning; evaluated with average IoU.',
+        tech:'Python, scikit-learn, Pandas, NumPy, PyTorch, Torchvision, OpenCV',
+        repo: 'https://github.com/rdelmo/Automatic-Number-Plate-Recognition-under-Foggy-Conditions'
+      }
     ];
 
     const grid = document.getElementById('projectGrid');
@@ -212,9 +308,12 @@
       const card = document.createElement('article');
       card.className = 'card tile';
       card.innerHTML = `
-        <div class="thumb">${p.emoji}</div>
-        <strong>${p.title}</strong>
+        <div class="thumb">
+          <img src="${p.image}" alt="${p.title} thumbnail" loading="lazy" />
+        </div>
+        <strong class="card-title">${p.title}</strong>
         <p class="meta">${p.blurb}</p>
+        <p class="meta techline">${p.tech}</p>
         <div>
           <a class="btn" href="${p.repo}" target="_blank" rel="noreferrer">Code ↗</a>
         </div>
